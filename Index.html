@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GC PHONES | Ultra-Premium Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #818cf8;
+            --accent: #f43f5e;
+            --bg: #020617;
+            --card-bg: #0f172a;
+            --text-main: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+
+        * { box-sizing: border-box; transition: all 0.3s ease; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0; background: var(--bg); color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* PREMIUM NAVIGATION */
+        nav {
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 20px 8%;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .logo {
+            font-weight: 800; font-size: 24px;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .nav-tools { display: flex; gap: 30px; font-size: 14px; font-weight: 600; }
+        .nav-tools span:hover { color: var(--primary); cursor: pointer; }
+
+        /* SEARCH BAR AREA */
+        .hero { padding: 80px 20px; text-align: center; }
+        
+        .search-container {
+            position: relative; max-width: 600px; margin: 30px auto;
+        }
+
+        #search {
+            width: 100%; padding: 20px 30px; border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--glass); color: white; font-size: 16px; outline: none;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+
+        #search:focus { border-color: var(--primary); background: rgba(255,255,255,0.08); }
+
+        /* PRODUCT GRID */
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 35px; padding: 40px 8%;
+        }
+
+        .card {
+            background: var(--card-bg); border-radius: 30px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05); position: relative;
+        }
+
+        .card:hover { transform: translateY(-12px); border-color: var(--primary); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+
+        .card-img { height: 320px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; }
+
+        .info { padding: 30px; }
+        .info h3 { margin: 0; font-size: 20px; font-weight: 700; }
+        .price { font-size: 26px; font-weight: 800; color: var(--primary); margin: 15px 0; }
+
+        .buy-btn {
+            width: 100%; padding: 15px; border-radius: 15px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white; border: none; font-weight: 700; cursor: pointer;
+        }
+
+        /* FLOATING TOOLS */
+        .floating-cart {
+            position: fixed; bottom: 30px; right: 30px;
+            background: white; color: black; padding: 18px 30px;
+            border-radius: 50px; font-weight: 800; z-index: 1000;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5); cursor: pointer;
+        }
+
+        .badge {
+            position: absolute; top: 20px; left: 20px;
+            background: var(--accent); padding: 5px 15px; border-radius: 50px; font-size: 11px; font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">GC PREMIUM</div>
+    <div class="nav-tools">
+        <span>Home</span>
+        <span>Latest</span>
+        <span style="color:var(--primary)">Owner: Goodluck Chiagozie</span>
+    </div>
+</nav>
+
+<div class="hero">
+    <h1 style="font-size: 50px; letter-spacing: -2px; margin-bottom: 10px;">Executive Mobile Store</h1>
+    <p style="color: #94a3b8; font-size: 18px;">Curated Flagship Smartphones with Worldwide Shipping.</p>
+    
+    <div class="search-container">
+        <input type="text" id="search" placeholder="Search 40+ Premium Models..." onkeyup="searchPhones()">
+    </div>
+</div>
+
+<div class="grid" id="phone-container"></div>
+
+<div class="floating-cart">
+    🛒 Bag: <span id="cart-count">0</span>
+</div>
+
+<script>
+    // REAL SMARTPHONE DATA (Example list of 40)
+    const phoneData = [
+        { name: "iPhone 15 Pro Titanium", price: 1099, tag: "Popular", img: "https://images.unsplash.com/photo-1696446701796-da61225697cc?w=800" },
+        { name: "Galaxy S24 Ultra Phantom", price: 1299, tag: "New", img: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=800" },
+        { name: "Google Pixel 8 Pro Obsidian", price: 999, tag: "Best AI", img: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800" },
+        { name: "OnePlus 12 Emerald", price: 799, tag: "Fast Charge", img: "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800" },
+        { name: "Sony Xperia 1 V", price: 1399, tag: "Cinema", img: "https://images.unsplash.com/photo-1523206489230-c012c64b2b48?w=800" }
+    ];
+
+    // Auto-generate the remaining up to 40
+    for(let i=6; i<=40; i++) {
+        phoneData.push({
+            name: `Flagship Edition Model X${i}`,
+            price: Math.floor(Math.random() * 900) + 400,
+            tag: "Premium",
+            img: `https://picsum.photos/seed/${i+100}/800/1000` // Using unique seeded images for a diverse look
+        });
+    }
+
+    let count = 0;
+
+    function render(list) {
+        const grid = document.getElementById("phone-container");
+        grid.innerHTML = list.map(p => `
+            <div class="card">
+                <div class="badge">${p.tag}</div>
+                <div class="card-img">
+                    <img src="${p.img}" alt="${p.name}">
+                </div>
+                <div class="info">
+                    <h3>${p.name}</h3>
+                    <div class="price">$${p.price}</div>
+                    <button class="buy-btn" onclick="addToCart()">Add to Bag</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function addToCart() {
+        count++;
+        document.getElementById("cart-count").innerText = count;
+    }
+
+    function searchPhones() {
+        const q = document.getElementById("search").value.toLowerCase();
+        const filtered = phoneData.filter(p => p.name.toLowerCase().includes(q));
+        render(filtered);
+    }
+
+    // Initial Display
+    render(phoneData);
+</script>
+
+</body>
+</html>
